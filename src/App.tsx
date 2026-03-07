@@ -168,7 +168,7 @@ export default function App() {
           </p>
           <p className="cite-line">
             {CITE_TEXT}{' '}
-            <span className="cite-line__placeholder">{CITE_DOI_LABEL}</span>
+            <a href={CITE_DOI_LABEL}>{CITE_DOI_LABEL}</a>
           </p>
           <p className="cite-line">
             {CONTACT_TEXT}{' '}{CONTACT_EMAIL}
