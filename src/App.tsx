@@ -16,6 +16,8 @@ import {
 import {
   CITE_DOI_LABEL,
   CITE_TEXT,
+  CONTACT_EMAIL,
+  CONTACT_TEXT,
   DEFAULT_GRID,
   DEFAULT_SETTINGS,
   EMPTY_MAPPING,
@@ -167,6 +169,9 @@ export default function App() {
           <p className="cite-line">
             {CITE_TEXT}{' '}
             <span className="cite-line__placeholder">{CITE_DOI_LABEL}</span>
+          </p>
+          <p className="cite-line">
+            {CONTACT_TEXT}{' '}{CONTACT_EMAIL}
           </p>
         </div>
       </header>
