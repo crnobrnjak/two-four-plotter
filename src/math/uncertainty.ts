@@ -72,11 +72,7 @@ export function computeUncertaintyGeometry(
       }
     });
 
-    comboIndexes.add(
-      nearestIndex < SIGN_COMBINATIONS.length
-        ? nearestIndex
-        : nearestIndex - SIGN_COMBINATIONS.length,
-    );
+    comboIndexes.add(Math.floor(nearestIndex / 2));
   });
 
   const boundarySegments = Array.from(comboIndexes)
