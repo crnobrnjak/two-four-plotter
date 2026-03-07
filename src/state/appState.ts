@@ -31,6 +31,6 @@ export const DEFAULT_SETTINGS: PlotSettings = {
 };
 
 export const CITE_TEXT =
-  "If you use this tool, please cite: Crnobrnja, K. (2026). Refractory Element Trends on the Two-Dimensional Four-Component Plot. Terra Nova.";
+  "If you use this tool, please cite: Crnobrnja, K. (2026). Refractory Element Trends on the Two-Dimensional Four-Component Plot. Terra Nova. Contact me at kostacrn (at) gmail (dot) com/";
 
 export const CITE_DOI_LABEL = "https://doi.org/10.1111/ter.70031";
