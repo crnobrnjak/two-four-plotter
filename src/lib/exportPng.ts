@@ -1,6 +1,7 @@
 export async function exportSvgAsPng(
   svg: SVGSVGElement,
   filename = "two-four-plotter.png",
+  exportWidth = 2400,
 ): Promise<void> {
   const serializer = new XMLSerializer();
   const source = serializer.serializeToString(svg);
@@ -11,10 +12,13 @@ export async function exportSvgAsPng(
 
   const image = new Image();
   const viewBox = svg.viewBox.baseVal;
-  const exportWidth = 1800;
-  const exportHeight = Math.round(
-    exportWidth * (viewBox.height / viewBox.width),
-  );
+
+  const width =
+    Number.isFinite(exportWidth) && exportWidth > 0 ? exportWidth : 2400;
+  const height =
+    viewBox && viewBox.width > 0
+      ? Math.round(width * (viewBox.height / viewBox.width))
+      : width;
 
   await new Promise<void>((resolve, reject) => {
     image.onload = () => resolve();
@@ -24,8 +28,8 @@ export async function exportSvgAsPng(
   });
 
   const canvas = document.createElement("canvas");
-  canvas.width = exportWidth;
-  canvas.height = exportHeight;
+  canvas.width = width;
+  canvas.height = height;
 
   const context = canvas.getContext("2d");
   if (!context) {

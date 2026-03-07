@@ -21,7 +21,7 @@ export function InspectorPanel({
 
       {!inspector ? (
         <p className="panel-hint">
-          Click a central line in the plot to inspect that sample.
+          Click a data line to inspect its composition.
         </p>
       ) : (
         <>

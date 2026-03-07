@@ -6,6 +6,7 @@ import { InspectorPanel } from './components/InspectorPanel';
 import { PlotSettingsPanel } from './components/PlotSettingsPanel';
 import { PlotView } from './components/PlotView';
 import { editableGridToParsedTable } from './lib/gridTable';
+import { IntroOverlay } from './components/IntroOverlay';
 import {
   getUniqueColorValues,
   guessColumnMapping,
@@ -62,6 +63,14 @@ export default function App() {
     included: {},
     labels: {},
   });
+
+  const [showIntro, setShowIntro] = useState<boolean>(() => {
+    if (typeof window === 'undefined') {
+      return true;
+    }
+
+  return window.localStorage.getItem('two-four-plotter-hide-intro') !== 'true';
+});
 
   const parsedTable = useMemo<ParsedTable>(
     () => editableGridToParsedTable(grid),
@@ -157,6 +166,21 @@ export default function App() {
     setExcludedText(Array.from(next).sort().join('\n'));
   };
 
+  const handleCloseIntro = () => {
+    setShowIntro(false);
+  };
+
+  const handleCloseIntroForever = () => {
+    if (typeof window !== 'undefined') {
+      window.localStorage.setItem('two-four-plotter-hide-intro', 'true');
+    }
+    setShowIntro(false);
+  };
+
+  const handleReopenIntro = () => {
+    setShowIntro(true);
+  };
+
   return (
     <div className="app-shell">
       <header className="app-header">
@@ -173,6 +197,12 @@ export default function App() {
           <p className="cite-line">
             {CONTACT_TEXT}{' '}{CONTACT_EMAIL}
           </p>
+        </div>
+
+        <div className="app-header__actions">
+          <button type="button" onClick={handleReopenIntro}>
+            How it works
+          </button>
         </div>
       </header>
 
@@ -240,6 +270,12 @@ export default function App() {
           <DataGridPanel grid={grid} onChange={setGrid} />
         </aside>
       </main>
+      {showIntro ? (
+        <IntroOverlay
+          onClose={handleCloseIntro}
+          onCloseForever={handleCloseIntroForever}
+        />
+      ) : null}
     </div>
   );
 }

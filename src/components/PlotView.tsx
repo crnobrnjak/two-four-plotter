@@ -1,4 +1,4 @@
-import { useMemo, useRef } from 'react';
+import { useMemo, useRef, useState } from 'react';
 import { exportSvgAsPng } from '../lib/exportPng';
 import { exportSvgElement } from '../lib/exportSvg';
 import type { ColumnMapping, PlotSettings } from '../types/data';
@@ -8,7 +8,7 @@ interface PlotViewProps {
   plot: DerivedPlot;
   settings: PlotSettings;
   selectedId: string | null;
-  onSelect: (id: string) => void;
+  onSelect: (id: string | null) => void;
   columns: string[];
   mapping: ColumnMapping;
   onMappingChange: (mapping: ColumnMapping) => void;
@@ -119,6 +119,8 @@ function CornerSelectorPair({
   );
 }
 
+const axisTicks = Array.from({ length: 9 }, (_, index) => (index + 1) / 10);
+
 export function PlotView({
   plot,
   settings,
@@ -129,6 +131,11 @@ export function PlotView({
   onMappingChange,
 }: PlotViewProps) {
   const svgRef = useRef<SVGSVGElement | null>(null);
+
+  const [exportWidth, setExportWidth] = useState(2400);
+  
+  const safeExportWidth =
+    Number.isFinite(exportWidth) && exportWidth >= 400 ? exportWidth : 2400;
 
   const legendOrigin = useMemo(
     () => getLegendOrigin(settings.legendPosition),
@@ -152,24 +159,42 @@ export function PlotView({
       <div className="plot-toolbar">
         <div>
           <h2>2–4 plot</h2>
-          <p>Click a central line to inspect a sample.</p>
+          <p>Click a data line to inspect its composition.</p>
         </div>
 
         <div className="toolbar-actions">
+          <label className="export-size-control">
+            <span>Export width (px)</span>
+            <input
+              type="number"
+              min="400"
+              step="100"
+              value={exportWidth}
+              onChange={(event) => setExportWidth(Number(event.target.value))}
+            />
+          </label>
+
           <button
             type="button"
-            onClick={() => svgRef.current && exportSvgElement(svgRef.current)}
+            onClick={() =>
+              svgRef.current &&
+              exportSvgElement(svgRef.current, 'two-four-plotter.svg', safeExportWidth)
+            }
           >
             Export SVG
           </button>
-
+          
           <button
             type="button"
             onClick={async () => {
               if (!svgRef.current) {
                 return;
               }
-              await exportSvgAsPng(svgRef.current);
+              await exportSvgAsPng(
+                svgRef.current,
+                'two-four-plotter.png',
+                safeExportWidth,
+              );
             }}
           >
             Export PNG
@@ -244,7 +269,7 @@ export function PlotView({
           <svg
             ref={svgRef}
             className="plot-svg"
-            viewBox="-0.08 -0.08 1.16 1.16"
+            viewBox="-0.12 -0.12 1.24 1.24"
             role="img"
             aria-label="Two-four plot"
           >
@@ -263,6 +288,110 @@ export function PlotView({
               stroke="#8fa1b3"
               strokeWidth="0.004"
             />
+
+            <g className="plot-ticks">
+              {axisTicks.map((tick) => (
+                <g key={`top-${tick}`}>
+                  <line
+                    x1={tick}
+                    y1={0}
+                    x2={tick}
+                    y2={-0.015}
+                    stroke="#475569"
+                    strokeWidth="0.25"
+                    vectorEffect="non-scaling-stroke"
+                  />
+                  <text
+                    x={tick}
+                    y={-0.032}
+                    textAnchor="middle"
+                    fontSize="0.028"
+                    fill="#334155"
+                  >
+                    {tick.toFixed(1)}
+                  </text>
+                </g>
+              ))}
+
+              {axisTicks.map((tick) => (
+                <g key={`bottom-${tick}`}>
+                  <line
+                    x1={tick}
+                    y1={1}
+                    x2={tick}
+                    y2={1.015}
+                    stroke="#475569"
+                    strokeWidth="0.25"
+                    vectorEffect="non-scaling-stroke"
+                  />
+                  <text
+                    x={tick}
+                    y={1.05}
+                    textAnchor="middle"
+                    fontSize="0.028"
+                    fill="#334155"
+                  >
+                    {tick.toFixed(1)}
+                  </text>
+                </g>
+              ))}
+
+              {axisTicks.map((tick) => {
+                const y = 1 - tick;
+              
+                return (
+                  <g key={`left-${tick}`}>
+                    <line
+                      x1={0}
+                      y1={y}
+                      x2={-0.015}
+                      y2={y}
+                      stroke="#475569"
+                      strokeWidth="0.25"
+                      vectorEffect="non-scaling-stroke"
+                    />
+                    <text
+                      x={-0.04}
+                      y={y}
+                      textAnchor="end"
+                      dominantBaseline="middle"
+                      fontSize="0.028"
+                      fill="#334155"
+                    >
+                      {tick.toFixed(1)}
+                    </text>
+                  </g>
+                );
+              })}
+
+              {axisTicks.map((tick) => {
+                const y = 1 - tick;
+              
+                return (
+                  <g key={`right-${tick}`}>
+                    <line
+                      x1={1}
+                      y1={y}
+                      x2={1.015}
+                      y2={y}
+                      stroke="#475569"
+                      strokeWidth="0.25"
+                      vectorEffect="non-scaling-stroke"
+                    />
+                    <text
+                      x={1.04}
+                      y={y}
+                      textAnchor="start"
+                      dominantBaseline="middle"
+                      fontSize="0.028"
+                      fill="#334155"
+                    >
+                      {tick.toFixed(1)}
+                    </text>
+                  </g>
+                );
+              })}
+            </g>
 
             <g clipPath="url(#plot-clip)">
               {plot.centralExtensions.map((segment, index) => (
@@ -359,7 +488,7 @@ export function PlotView({
                     strokeWidth="14"
                     vectorEffect="non-scaling-stroke"
                     strokeLinecap="round"
-                    onClick={() => onSelect(datum.id)}
+                    onClick={() => onSelect(selectedId === datum.id ? null : datum.id)}
                     style={{ cursor: 'pointer' }}
                   />
 
@@ -374,6 +503,7 @@ export function PlotView({
                       strokeWidth={Math.max(settings.lineWidth * 4, 7)}
                       vectorEffect="non-scaling-stroke"
                       strokeLinecap="round"
+                      pointerEvents="none"
                     />
                   ) : null}
                 </g>

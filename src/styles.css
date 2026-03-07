@@ -287,6 +287,7 @@ textarea {
   display: flex;
   gap: 0.6rem;
   flex-wrap: wrap;
+  align-items: flex-end;
 }
 
 .warning-stack {
@@ -524,6 +525,143 @@ textarea {
 .grid-cell-input:focus {
   outline: none;
   background: transparent;
+}
+
+.app-header__inner {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  align-items: flex-start;
+}
+
+.app-header__actions {
+  display: flex;
+  align-items: flex-start;
+}
+
+.intro-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 2000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1.5rem;
+}
+
+.intro-overlay__backdrop {
+  position: absolute;
+  inset: 0;
+  background: rgba(15, 23, 42, 0.5);
+  backdrop-filter: blur(2px);
+}
+
+.intro-overlay__panel {
+  position: relative;
+  width: min(1100px, 100%);
+  max-height: min(90vh, 900px);
+  overflow: auto;
+  background: #ffffff;
+  border: 1px solid #d9e1ea;
+  border-radius: 18px;
+  box-shadow: 0 30px 80px rgba(15, 23, 42, 0.22);
+  padding: 1.25rem 1.25rem 1rem;
+}
+
+.intro-overlay__header {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  align-items: flex-start;
+  margin-bottom: 1rem;
+}
+
+.intro-overlay__header h2 {
+  margin: 0;
+  font-size: 1.5rem;
+}
+
+.intro-overlay__close {
+  min-width: 44px;
+  min-height: 44px;
+  font-size: 1.5rem;
+  line-height: 1;
+  padding: 0;
+}
+
+.intro-overlay__content {
+  display: grid;
+  grid-template-columns: minmax(320px, 1.1fr) minmax(280px, 0.9fr);
+  gap: 1.25rem;
+  align-items: start;
+}
+
+.intro-overlay__text p {
+  margin-top: 0;
+}
+
+.intro-list {
+  margin-top: 0.4rem;
+  margin-bottom: 1rem;
+  padding-left: 1.2rem;
+}
+
+.intro-howto {
+  margin-top: 1rem;
+  padding: 0.9rem 1rem;
+  border: 1px solid #e2e8f0;
+  border-radius: 14px;
+  background: #f8fbff;
+}
+
+.intro-howto h3 {
+  margin: 0 0 0.5rem;
+  font-size: 1rem;
+}
+
+.intro-howto ol {
+  margin: 0;
+  padding-left: 1.2rem;
+}
+
+.intro-overlay__figure {
+  border: 1px solid #e2e8f0;
+  border-radius: 14px;
+  background: #fcfdff;
+  padding: 0.75rem;
+}
+
+.intro-figure {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+.intro-overlay__footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.75rem;
+  margin-top: 1rem;
+}
+
+.button-primary {
+  background: #2563eb;
+  color: #ffffff;
+  border-color: #2563eb;
+}
+
+.button-primary:hover {
+  background: #1d4ed8;
+}
+
+@media (max-width: 900px) {
+  .app-header__inner {
+    flex-direction: column;
+  }
+
+  .intro-overlay__content {
+    grid-template-columns: 1fr;
+  }
 }
 
 @media (max-width: 1600px) {
